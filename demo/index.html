@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>palette-shader demo</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Iosevka/6.0.0/iosevka/iosevka.min.css"
+    />
+  </head>
+  <body>
+    <!--h1>Palette Viz</h1-->
+    <div class="app">
+      <div class="sidebar">
+        <div class="sidebar__tools" data-tools></div>
+        <div class="sidebar__beam">
+          <input
+            class="beam__token"
+            data-beam-token
+            type="text"
+            placeholder="Token Beam session token…"
+            spellcheck="false"
+            autocomplete="off"
+          />
+          <button class="beam__connect" data-beam-connect disabled>Connect</button>
+          <span class="beam__status" data-beam-status></span>
+        </div>
+        <textarea
+          class="palette-paste"
+          data-palette-paste
+          placeholder="Paste hex colors (comma or space separated)…"
+        ></textarea>
+        <div class="sidebar__palette palette" data-palette></div>
+      </div>
+      <div id="app" class="viz" data-viz></div>
+    </div>
+    <script type="module" src="./main.js"></script>
+
+    <article class="about">
+      <div class="about__header">
+        <h1>palette-shader</h1>
+        <a href="https://github.com/Ankit-Sharma1011/color-palette-shader">GitHub</a>
+      </div>
+      <p>
+        A dependency-free WebGL2 shader that visualizes a color palette by mapping a color space
+        onto a plane, polar wheel, or interactive 3D solid, then snapping each pixel to the nearest
+        palette color. Toggle the 3D view to explore the full color space as a rotatable cube or
+        cylinder — drag to orbit and use the position slider to slice into the volume. Supports 30+
+        color models and eleven distance metrics, all running entirely on the GPU.
+      </p>
+
+      <aside>
+        <h2>What is this for?</h2>
+        <p>
+          It shows you how a color palette distributes across "all possible colors." Each region of
+          the wheel or grid represents a color — and whichever palette color is closest to it claims
+          that region.
+        </p>
+        <p>
+          So if one of your palette colors only claims a tiny sliver, it lives very close to another
+          color already in your palette — it's almost redundant. If it claims a large region, it's
+          doing a lot of unique work.
+        </p>
+        <ul>
+          <li>How <strong>distinct</strong> each color is from the others</li>
+          <li>
+            How <strong>balanced</strong> the palette is overall — even regions mean even coverage
+          </li>
+          <li>
+            Whether a <strong>new color is worth adding</strong> — if it doesn't carve out its own
+            space, it's probably not pulling its weight
+          </li>
+        </ul>
+        <table>
+          <caption>
+            Common questions &rarr; click a row to apply settings
+          </caption>
+          <thead>
+            <tr>
+              <th>I want to know&hellip;</th>
+              <th>Color model</th>
+              <th>Distance metric</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-color-model="okhslPolar" data-metric="oklab" tabindex="0" role="button">
+              <td>How my hue distribution looks</td>
+              <td>OKHsl Polar</td>
+              <td>OKLab</td>
+            </tr>
+            <tr data-color-model="okhsl" data-metric="deltaE2000" tabindex="0" role="button">
+              <td>Which two colors are most similar</td>
+              <td>OKHsl</td>
+              <td>&Delta;E2000</td>
+            </tr>
+            <tr data-color-model="okhslPolar" data-metric="oklab" tabindex="0" role="button">
+              <td>Whether a new color is worth adding</td>
+              <td>OKHsl Polar</td>
+              <td>OKLab</td>
+            </tr>
+            <tr data-color-model="cielabD50" data-metric="cielabD50" tabindex="0" role="button">
+              <td>How my palette reads on print</td>
+              <td>CIELab D50</td>
+              <td>CIELab D50</td>
+            </tr>
+            <tr data-color-model="oklchPolar" data-metric="deltaE2000" tabindex="0" role="button">
+              <td>How close the colors look to a human eye</td>
+              <td>OKLch Polar</td>
+              <td>&Delta;E2000</td>
+            </tr>
+            <tr data-color-model="hslPolar" data-metric="rgb" tabindex="0" role="button">
+              <td>What the palette looks like to a computer</td>
+              <td>HSL Polar</td>
+              <td>RGB</td>
+            </tr>
+          </tbody>
+        </table>
+      </aside>
+
+      <aside>
+        <h2>Install</h2>
+        <pre class="code"><code>npm install palette-shader</code></pre>
+      </aside>
+
+      <aside>
+        <h2>Usage</h2>
+        <figure>
+          <figcaption>Minimal example — pass a container or append the canvas yourself.</figcaption>
+          <pre class="code"><code>import { PaletteViz } from 'palette-shader';
+import { converter } from 'culori';
+
+// colors must be [r, g, b] arrays with values in 0–1 (sRGB)
+const toRGB = converter('rgb');
+const c = (hex) => { const { r, g, b } = toRGB(hex); return [r, g, b]; };
+
+// option A: pass a container, canvas is appended automatically
+const viz = new PaletteViz({
+  palette: ['#f2f0e5', '#4b80ca', '#b45252', '#a2dcc7'].map(c),
+  container: document.querySelector('#app'),
+  observeResize: true,
+  colorModel: 'okhslPolar', // 'okhslPolar' | 'oklchPolar' | 'cielchPolar' | 'okhsl' | …
+  distanceMetric: 'oklab',  // 'oklab' | 'oklrab' | 'deltaE2000' | 'cielabD50' | …
+  axis: 'y',                // which axis the position slider controls
+  position: 0,              // 0–1 slice position (0 = one extreme, 1 = other side)
+  invertAxes: ['z'],        // invert one or more model axes
+  outlineWidth: 0,          // transparent outline between regions (physical px). 0 = off
+});
+
+// option B: no container — place the canvas yourself
+const viz = new PaletteViz({ palette, observeResize: true });
+document.querySelector('#app').appendChild(viz.canvas);
+
+// update live
+viz.palette = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+viz.position = 0.3;
+viz.outlineWidth = 2; // change at any time — no recompile while value stays > 0
+
+// clean up
+viz.destroy();</code></pre>
+        </figure>
+      </aside>
+
+      <aside>
+        <h2>3D Usage</h2>
+        <figure>
+          <figcaption>
+            <code>PaletteViz3D</code> renders the full color space as an interactive 3D cube (or
+            cylinder for polar models). Drag to orbit, use the position slider to slice.
+          </figcaption>
+          <pre
+            class="code"
+          ><code>import { PaletteViz3D, mat4RotateX, mat4RotateY, mat4Multiply } from 'palette-shader';
+
+const viz3d = new PaletteViz3D({
+  palette: ['#f2f0e5', '#4b80ca', '#b45252', '#a2dcc7'].map(c),
+  container: document.querySelector('#app'),
+  observeResize: true,
+  colorModel: 'okhsv',
+  distanceMetric: 'oklab',
+  position: 1.0,       // 1 = full volume, 0 = fully sliced
+  outlineWidth: 2,
+});
+
+// trackball rotation (wire up your own pointer events)
+viz3d.rotate(0.01, 0.02); // dx, dy in radians
+
+// or set the model matrix directly
+viz3d.modelMatrix = mat4Multiply(mat4RotateX(0.4), mat4RotateY(0.6));
+
+viz3d.destroy();</code></pre>
+        </figure>
+      </aside>
+
+      <aside>
+        <h2>Notes</h2>
+        <p>
+          No runtime dependencies — uses raw WebGL 2. Colors are passed as
+          <code>[r, g, b]</code> arrays (0–1 sRGB); use
+          <a href="https://culorijs.org/" target="_blank" rel="noopener noreferrer">culori</a> or
+          any color library to convert from CSS strings. Color models and distance metrics are
+          orthogonal — the model controls how the color space is rendered, the metric controls which
+          palette color each pixel snaps to.
+        </p>
+        <p>
+          The <strong>outline width</strong> slider draws a transparent gap where regions meet,
+          revealing whatever is behind the canvas. It uses a two-pass render: the first pass is
+          identical in cost to no outline; the second pass is a tiny edge-detection shader with four
+          texture reads per pixel — no extra color-space math.
+        </p>
+        <p>
+          The typeface is the open-source
+          <a href="https://be5invis.github.io/Iosevka/" target="_blank" rel="noopener noreferrer"
+            >Iosevka</a
+          >. Created by
+          <a href="https://elastiq.ch" target="_blank" rel="noopener noreferrer">Ankit Sharma</a>.
+        </p>
+      </aside>
+      <aside class="support">
+        <h2>Support</h2>
+        <p>
+          If you find this project useful, please consider
+          <a href="https://ko-fi.com/thelwkeymc" rel="noopener" target="_blank"
+            >buying me a coffee</a
+          >. It keeps my caffeine levels high enough to distinguish between #fafafa and #fbfbfb.
+        </p>
+        <a href="https://ko-fi.com/thelwkeymc" rel="noopener" target="_blank" class="kofi">
+          <img src="https://storage.ko-fi.com/cdn/brandasset/kofi_s_logo_nolabel.png" alt="Ko-fi" />
+        </a>
+      </aside>
+    </article>
+  </body>
+</html>

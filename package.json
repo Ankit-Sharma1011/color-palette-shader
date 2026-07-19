@@ -1,0 +1,62 @@
+{
+  "name": "palette-shader",
+  "version": "0.20.1",
+  "description": "Dependency-free WebGL2 shader that maps any colour palette across perceptual colour spaces — OKHsv, OKHsl, OKLCH and more.",
+  "keywords": [
+    "color",
+    "colour",
+    "palette",
+    "shader",
+    "webgl",
+    "webgl2",
+    "oklab",
+    "oklch",
+    "okhsv",
+    "okhsl",
+    "deltaE",
+    "visualization",
+    "colour-science"
+  ],
+  "author": "Ankit Sharma <Ankus1173@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/Ankit-Sharma1011/color-palette-shader#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ankit-Sharma1011/color-palette-shader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ankit-Sharma1011/color-palette-shader/issues"
+  },
+  "type": "module",
+  "main": "./dist/palette-shader.umd.cjs",
+  "module": "./dist/palette-shader.js",
+  "types": "./dist/palette-shader.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/palette-shader.d.ts",
+      "import": "./dist/palette-shader.js",
+      "require": "./dist/palette-shader.umd.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": false,
+  "workspaces": [
+    "demo"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w demo",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "preview": "npm run preview -w demo"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "typescript": "^5.4.5",
+    "vite": "^7.0.0",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}

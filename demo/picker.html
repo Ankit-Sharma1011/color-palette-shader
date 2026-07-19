@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PickyPalette has moved</title>
+    <meta http-equiv="refresh" content="3;url=https://pickypalette.color.pizza/" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Iosevka/6.0.0/iosevka/iosevka.min.css"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --c-surface: light-dark(#fff, #292f2f);
+        --c-surface-on: light-dark(#292f2f, #fff);
+        font-family: 'Iosevka Web', 'Iosevka', ui-monospace, monospace;
+        font-weight: 300;
+        font-size: calc(0.75rem + 0.3vw);
+      }
+      body {
+        background: var(--c-surface);
+        color: var(--c-surface-on);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+        margin: 0;
+        padding: 2rem;
+        text-align: center;
+      }
+      h1 { font-weight: 200; letter-spacing: -0.03em; }
+      a { color: inherit; }
+      p { margin-top: 1em; font-size: 0.9em; }
+      .pie {
+        width: 1.6em;
+        height: 1.6em;
+        margin: 1.5em auto 0;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 1px solid var(--c-surface-on);
+      }
+      .pie circle {
+        fill: none;
+        stroke: var(--c-surface-on);
+        stroke-width: 32;
+        stroke-dasharray: 100 100;
+        stroke-dashoffset: 100;
+        transform: rotate(-90deg);
+        transform-origin: center;
+        animation: fill-pie 3s linear forwards;
+      }
+      @keyframes fill-pie {
+        to { stroke-dashoffset: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PickyPalette has moved</h1>
+    <p>This project now lives at <a href="https://github.com/Ankit-Sharma1011/pickypalette">github.com/Ankit-Sharma1011/pickypalette</a>.</p>
+    <p>Redirecting in 3 seconds&hellip; or <a href="https://pickypalette.color.pizza/">go now</a>.</p>
+    <svg class="pie" viewBox="0 0 36 36"><circle r="16" cx="18" cy="18" pathLength="100"/></svg>
+  </body>
+</html>
