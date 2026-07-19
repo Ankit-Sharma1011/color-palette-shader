@@ -580,4 +580,4 @@ The demo lives in `demo/` and is a private workspace package. It resolves the li
 
 ## License
 
-MIT © [David Aerne](https://elastiq.ch)
+MIT © [Ankit Sharma](https://elastiq.ch)
