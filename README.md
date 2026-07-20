@@ -2,7 +2,7 @@
 
 A dependency-free WebGL2 shader that maps any color palette across a 3-D perceptual color space and snaps each pixel to the nearest palette color. Visualize how a palette distributes across 30+ color models and eleven distance metrics, all on the GPU. Includes 2-D cross-section views (`PaletteViz`) and an interactive 3-D cube/cylinder view (`PaletteViz3D`) with trackball rotation.
 
-[**Live demo →**](https://Ankit-Sharma1011.github.io/color-palette-shader/)
+[**Live demo →**]()https://color-palette-shader.vercel.app/
 
 ---
 
